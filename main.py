@@ -33,16 +33,20 @@ def initialize_schema():
         except Exception as e:
             print(f"Error: {e}")
             print(statement)
+            cur.close()
+            conn.close()
+            return False
 
     conn.commit()
     cur.close()
     conn.close()
     
-    return
+    return True
 
 
 # Initializes the database Schema
-initialize_schema()
+assert initialize_schema()
+print("[1] Schema Initialized")
 
 # Load Data
 df = pd.read_csv(data_src)
