@@ -3,9 +3,9 @@
 import sqlite3
 import pandas as pd
 
-# Initialize Database
-db_name = "netflix.db"
-data_src = "../netflix_titles.csv"
+# Setting Constants
+db_name = "netflix.db"  # filename of the sqlite db
+data_src = "../netflix_titles.csv"  # Source directory of the data
 
 
 def initialize_schema():
@@ -41,9 +41,8 @@ def initialize_schema():
     return
 
 
-def main():
-    initialize_schema()
-
+# Initializes the database Schema
+initialize_schema()
 
 # Load Data
 df = pd.read_csv(data_src)
