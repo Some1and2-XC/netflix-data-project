@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 
+import warnings
 import sqlite3
 import pandas as pd
+
+# Suppresses warnings from pandas
+warnings.simplefilter(action="ignore", category=UserWarning)
 
 # Setting Constants
 db_name = "netflix.db"  # filename of the sqlite db
@@ -10,7 +14,7 @@ data_src = "../netflix_titles.csv"  # Source directory of the data
 
 def initialize_schema():
     """
-    Function for initializing the sqlite3 database schema
+    Function for initializing the sqlite3 database schema (unused)
     """
 
     db_schema_filename = "schema.sql"
@@ -47,7 +51,12 @@ def initialize_schema():
 def get_comma_values(df, key: str) -> pd.DataFrame:
     """
     function for getting the comma values from a dataframe
+    df: pd.DataFrame
+        The dataframe that is being searched through
+    key: str
+        The key string to index df from
     """
+
     return df[df[key].notna()][key] \
         .map(lambda cv: cv.split(", ")) \
         .explode() \
@@ -55,12 +64,50 @@ def get_comma_values(df, key: str) -> pd.DataFrame:
         .rename(columns = {0:key})
 
 
-def get_stats(srs):
-    return srs.value_counts().head(2)
+def count_values(srs):
+    """
+    Function for getting the counts of values in a pandas series
+    srs: pd.Series
+        the series that is being passed
+    """
 
-# Initializes the database Schema
-# assert initialize_schema()
-# print("[1] Schema Initialized")
+    return str(srs.value_counts().head(5)) + "\n"
+
+
+def answer_questions():
+    """
+    Function for answering questions about the dataset
+    """
+
+    print("Q#1: Which actor appears the most?")
+    print(count_values(actors))
+
+    print("Q#2: Which genre has the most content?")
+    print(count_values(genres))
+
+    print("Q#3: Which director has made the most TV Shows?")
+    print(
+        count_values(
+            df \
+            [df.type == "TV Show"] \
+            .director))
+
+    print("Q#4: Which director has made the most PG Movies?")
+    print(
+        count_values(
+            df \
+            [df.rating == "PG"] \
+            [df.type == "Movie"] \
+            .director
+    ))
+
+    print("Q#5: Which director has made the most R Rated Movies?")
+    print(
+        count_values(
+            df \
+            [df.rating == "R"] \
+            [df.type == "Movie"] \
+            .director))
 
 # Load Data
 df = pd.read_csv(data_src, encoding="ascii", encoding_errors="ignore")
@@ -70,10 +117,8 @@ ratings = df.rating.unique()
 countries = df.country.unique()
 tv_types = df.type.unique()
 directors = df.director.unique()
-
 actors = get_comma_values(df, "cast")
 genres = get_comma_values(df, "listed_in")
 
-print(get_stats(df.director))
-
-exit()
+# Questions
+answer_questions()
