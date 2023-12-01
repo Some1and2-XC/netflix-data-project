@@ -44,22 +44,26 @@ def initialize_schema():
     return True
 
 
-def get_comma_values(df, key: str):
+def get_comma_values(df, key: str) -> pd.DataFrame:
     """
     function for getting the comma values from a dataframe
     """
     return df[df[key].notna()][key] \
         .map(lambda cv: cv.split(", ")) \
         .explode() \
-        .unique()
+        .to_frame() \
+        .rename(columns = {0:key})
 
+
+def get_stats(srs):
+    return srs.value_counts().head(2)
 
 # Initializes the database Schema
 # assert initialize_schema()
-print("[1] Schema Initialized")
+# print("[1] Schema Initialized")
 
 # Load Data
-df = pd.read_csv(data_src)
+df = pd.read_csv(data_src, encoding="ascii", encoding_errors="ignore")
 
 # Get column values
 ratings = df.rating.unique()
@@ -70,3 +74,6 @@ directors = df.director.unique()
 actors = get_comma_values(df, "cast")
 genres = get_comma_values(df, "listed_in")
 
+print(get_stats(df.director))
+
+exit()
