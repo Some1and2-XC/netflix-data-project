@@ -1,5 +1,17 @@
 #!/usr/bin/env python3
 
+"""
+Author: Mark T
+Date: 12/1/2023
+
+Assignment 6 for DBAS3018
+The reshaping that takes place is in the `get_comma_values()` function.
+What this function does is it splits the values by comma and just returns a 1D array of the output.
+This function also applies a function to a specific column. 
+The `answer_questions()` function does the "splitting data into groups based on some criteria",
+this function splices the dataframe to get answers to questions.
+"""
+
 import warnings
 import sqlite3
 import pandas as pd
